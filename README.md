@@ -1,7 +1,4 @@
 # Draft-Analyzer
-A simple Draft Analyzer for Hex TCG
-
-# Draft-Analyzer
 [A simple Draft Analyzer for Hex TCG](http://forums.cryptozoic.com/showthread.php?t=44232)
 
 *WARNING*: You need to read installation instructions carefully. There is no extensive documentation or tooltips, spend 5 minutes reading the instructions to avoid problems down the line.
