@@ -208,10 +208,10 @@ class Gui(tk.Tk):
             # Modifies variables in API_logger_with_GUI for this instance of the program
             # Possible improvent: Implement the variables as instance variables in APIHandler and modify them with a function
             if not isinstance(url, str) or url == "":
-                API_logger_with_GUI.APIHandler.forwardingFlag = False
+                API_logger.APIHandler.forwardingFlag = False
             else:
-                API_logger_with_GUI.APIHandler.TCG_Browser_URL = url
-                API_logger_with_GUI.APIHandler.forwardingFlag = True
+                API_logger.APIHandler.TCG_Browser_URL = url
+                API_logger.APIHandler.forwardingFlag = True
 
             # Save url in config.ini for future use
             config_handler.set_url(url)
