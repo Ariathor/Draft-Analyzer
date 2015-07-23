@@ -110,7 +110,10 @@ def export_collection():
         writer.writerow(['Card', 'Price', 'Shard', 'Set', 'Rarity', 'Number Owned'])
         for key in collection:
             if key not in ('Blood Shard', 'Diamond Shard', 'Sapphire Shard', 'Ruby Shard', 'Wild Shard'):
-                price = prices[key.replace(',', '')]                                            #AH Data has no commas
+                try:
+                    price = prices[key.replace(',', '')]                                     # AH Data has no commas
+                except:
+                    price = 0
                 writer.writerow([key, price, colors[key], sets[key], rarities[key], collection[key]])
 
 
