@@ -266,7 +266,7 @@ def main(exQueue):
     myServer.start()
 
     app = Gui(q)
-    app.iconbitmap(default='Icons/D-Icon.ico')
+    #app.iconbitmap(default='Icons/D-Icon.ico') #Unnecessary for Mac build
     exQueue.put(app)                            # Put app in an external queue so the Draft Analyzer module can interact with it
 
     app.mainloop()

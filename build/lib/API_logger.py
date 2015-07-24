@@ -6,7 +6,7 @@ from os.path import join as pjoin
 import datetime
 import time
 import threading
-import winsound
+#import winsound
 import json
 import requests
 import queue
@@ -38,8 +38,9 @@ class APIHandler(BaseHTTPRequestHandler):
 
     forwardingFlag, TCG_Browser_URL = config_handler.read_url()
 
-    def play_sound(self, sound_path):
-        winsound.PlaySound(sound_path, winsound.SND_FILENAME)
+    # disabled for Mac build
+    #def play_sound(self, sound_path):
+    #   winsound.PlaySound(sound_path, winsound.SND_FILENAME)
 
     # Tries to send data to hex.tcgbrowser
     def send_to_browser(self, data):
@@ -60,13 +61,16 @@ class APIHandler(BaseHTTPRequestHandler):
 
 
         myMessage = ('', '')
-        if jsonDict['Message'] == 'DraftPack' and len(jsonDict['Cards']) == 15 and (time.time() - APIHandler.startTime) >= 1200:         # Play a sound if this is the first DraftPack for the last 25 minutes
-            threading.Thread(target=self.play_sound, args=('Sounds/short_ringtone.wav',)).start()
-            APIHandler.startTime = time.time()
-            APIHandler.draftValue = 0
 
-        if jsonDict['Message'] == 'GameStarted':
-            threading.Thread(target=self.play_sound, args=('Sounds/game_start.wav',)).start()
+        # disabled for Mac build
+        #if jsonDict['Message'] == 'DraftPack' and len(jsonDict['Cards']) == 15 and (time.time() - APIHandler.startTime) >= 1200:         # Play a sound if this is the first DraftPack for the last 25 minutes
+        #    threading.Thread(target=self.play_sound, args=('Sounds/short_ringtone.wav',)).start()
+        #    APIHandler.startTime = time.time()
+        #    APIHandler.draftValue = 0
+
+        # disabled for Mac build
+        #if jsonDict['Message'] == 'GameStarted':
+        #    threading.Thread(target=self.play_sound, args=('Sounds/game_start.wav',)).start()
 
         if jsonDict['Message'] == 'DraftPack':
             draftPack = [x['Name'] for x in jsonDict['Cards']]  # jsonDict['Cards'] is a list of card-dictionaries
