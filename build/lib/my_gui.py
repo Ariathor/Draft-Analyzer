@@ -83,7 +83,6 @@ class Gui(tk.Tk):
     def write_multicolored(self, line, tags):
         # Careful if I add more tags
         # Tags are either (color1, color2, playsetTag) or (color1, color2, playsetTag, Strikethrough)
-        print(tags)
         colorTags, *otherTags = tags
         colorTags = [x.strip() for x in colorTags.split(',')]  # Splitting tags on comma and stripping whitespace
         numColors = len(colorTags)

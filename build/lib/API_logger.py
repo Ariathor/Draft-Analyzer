@@ -6,7 +6,7 @@ from os.path import join as pjoin
 import datetime
 import time
 import threading
-import winsound
+import pyglet
 import json
 import requests
 import queue
@@ -39,7 +39,8 @@ class APIHandler(BaseHTTPRequestHandler):
     forwardingFlag, TCG_Browser_URL = config_handler.read_url()
 
     def play_sound(self, sound_path):
-        winsound.PlaySound(sound_path, winsound.SND_FILENAME)
+        sound = pyglet.media.load(sound_path, streaming=False)
+        sound.play()
 
     # Tries to send data to hex.tcgbrowser
     def send_to_browser(self, data):
