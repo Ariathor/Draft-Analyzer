@@ -12,17 +12,35 @@ import config_handler
 
 os.makedirs('Collection', exist_ok=True)
 
-# Takes a list of card-dictionaries and a collection path and dumps the cards in a file in that path
-def collection_dump(path, collectionDict):
-    myCollection = {}
-    for card in collectionDict:
+# Takes a collection API message and a collection path and dumps the cards in a file in that path. Format:
+# {
+# "Action":"Update|Overwrite",
+# "CardsAdded":[...],
+# "CardsRemoved":[...],
+# "User":"<NAME>",
+# "Message":"Collection"
+# }
+# Each card has its own dict
+
+def collection_update(jsonDict):
+    PATH = 'Collection/My_Collection.json'
+    if jsonDict['Action'] == 'Overwrite':
+        myCollection = {}
+    if jsonDict['Action'] == 'Update':
+        myCollection = collection_open(PATH)
+
+    for card in jsonDict['CardsAdded']:
         if card['Name'] in myCollection:
             myCollection[card['Name']] += 1
         else:
             myCollection[card['Name']] = 1
 
-    with open(path, 'wt') as fp:
-        json.dump(myCollection, fp, indent = 4, sort_keys=True)
+    for card in jsonDict['CardsRemoved']:
+        if card['Name'] in myCollection:
+            myCollection[card['Name']] -= 1
+
+    with open(PATH, 'wt') as fp:
+        json.dump(myCollection, fp, indent=4, sort_keys=True)
 
 # Takes a collection path as argument
 # Returns a dictionary of cards. Each card is paired with the number owned.

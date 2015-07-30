@@ -4,7 +4,7 @@ __author__ = 'Ioannis'
 import configparser
 import os
 
-verboseFlag = True
+verboseFlag = False
 
 
 def default_values():

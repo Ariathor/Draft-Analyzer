@@ -27,14 +27,13 @@ class APIHandler(BaseHTTPRequestHandler):
 
     verboseFlag = config_handler.verboseFlag
     startTime = 0
-    collectionAccessTime = 0
 
     # Imports the cards' value dictionary. Uses trimmed values if trimmedValues = true
     trimmedValues = config_handler.read_price_mode()
     ahData = AH_data_handler.open_trimmed_values() if trimmedValues else AH_data_handler.open_simple_median()
     draftValue = 0
     store_path = pjoin(os.getcwd(), 'API_logs', datetime.date.today().strftime('%d-%m-%Y') + '.json') #Stores the data in a json folder with today's date
-    previousData = False
+    collectionLock = threading.Lock()
 
     forwardingFlag, TCG_Browser_URL = config_handler.read_url()
 
@@ -59,12 +58,13 @@ class APIHandler(BaseHTTPRequestHandler):
             with open(APIHandler.store_path, 'a') as fh:
                 fh.write(datetime.datetime.now().strftime("%H:%M:%S") + "\t" + str(jsonDict) + '\n')
 
-
         myMessage = ('', '')
-        if jsonDict['Message'] == 'DraftPack' and len(jsonDict['Cards']) == 15 and (time.time() - APIHandler.startTime) >= 1200:         # Play a sound if this is the first DraftPack for the last 25 minutes
+        # First DraftPack for the last 20 minutes
+        if jsonDict['Message'] == 'DraftPack' and len(jsonDict['Cards']) == 15 and (time.time() - APIHandler.startTime) >= 1200:
             threading.Thread(target=self.play_sound, args=('Sounds/short_ringtone.wav',)).start()
             APIHandler.startTime = time.time()
             APIHandler.draftValue = 0
+
 
         if jsonDict['Message'] == 'GameStarted':
             threading.Thread(target=self.play_sound, args=('Sounds/game_start.wav',)).start()
@@ -90,9 +90,10 @@ class APIHandler(BaseHTTPRequestHandler):
         elif jsonDict['Message'] == 'Collection':
             if not os.path.isfile('Collection/My_Collection.json'):
                 dataQueue.put(('Update', 'Collection updated'))
-            collection_handler.collection_dump('Collection/My_Collection.json', jsonDict['Cards'])
+            with APIHandler.collectionLock:
+                collection_handler.collection_update(jsonDict)
 
-        # I should handle other interesting cases here like collection. I should also save draft picks.
+        # I should handle other interesting cases here like collection.
 
     def handle_expect_100(self):
         if self.verboseFlag:
@@ -112,15 +113,13 @@ class APIHandler(BaseHTTPRequestHandler):
                 print(data)
 
             jsonDict = json.loads(data.decode())
-            # Ugly fix to the collection spam at the end of draft problem
-            #if jsonDict['Message'] != 'Collection' or time.time() - APIHandler.collectionAccessTime >= 20:
-            if data != APIHandler.previousData:
-                threading.Thread(target=self.my_data_parsing, args=(jsonDict,)).start()  # Forwards the data to the other functions
-                if self.forwardingFlag:
+
+            # Forward the data
+            threading.Thread(target=self.my_data_parsing, args=(jsonDict,)).start()
+            if self.forwardingFlag:
                     threading.Thread(target=self.send_to_browser, args=(data,)).start()          # Forwards the data to hex.tcgbrowser
-                if jsonDict['Message'] == 'Collection':
-                    APIHandler.collectionAccessTime = time.time()
-            APIHandler.previousData = data
+
+
             # Send proper response
             expect = self.headers.get('Expect', "")
             if expect.lower() == "100-continue":

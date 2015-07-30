@@ -5,6 +5,7 @@ import tkinter as tk
 import queue
 import threading
 import math
+import sys
 
 import API_logger
 import collection_handler
@@ -103,6 +104,7 @@ class Gui(tk.Tk):
         self.write_one_line('\n')
 
         if event == 'DraftPack':
+            raise NameError('Hallo')
             try:
                 if len(msg) < 8:
                     newPack = msg
@@ -265,7 +267,9 @@ def main(exQueue):
     myServer.start()
 
     app = Gui(q)
-    app.iconbitmap(default='Icons/D-Icon.ico')
+    # Only change icon on windows
+    if sys.platform.startswith('win32'):
+        app.iconbitmap(default='Icons/D-Icon.ico')
     exQueue.put(app)                            # Put app in an external queue so the Draft Analyzer module can interact with it
 
     app.mainloop()
