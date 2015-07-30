@@ -104,7 +104,6 @@ class Gui(tk.Tk):
         self.write_one_line('\n')
 
         if event == 'DraftPack':
-            raise NameError('Hallo')
             try:
                 if len(msg) < 8:
                     newPack = msg
