@@ -88,7 +88,7 @@ class APIHandler(BaseHTTPRequestHandler):
             dataQueue.put(('DraftValue', self.draftValue))
             collection_handler.draft_card_picked('Collection/My_Drafted_Cards.json', jsonDict['Card'])
         elif jsonDict['Message'] == 'Collection':
-            if not os.path.isfile('Collection/My_Collection.json'):
+            if not os.path.isfile('Collection/My_Collection.json') and jsonDict['Action'] == 'Overwrite':
                 dataQueue.put(('Update', 'Collection updated'))
             with APIHandler.collectionLock:
                 collection_handler.collection_update(jsonDict)

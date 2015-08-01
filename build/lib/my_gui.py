@@ -23,7 +23,7 @@ class Gui(tk.Tk):
         self.ahData = AH_data_handler.open_simple_median()            # Imports the cards' value dictionary
         self.myCollection = collection_handler.collection_open('Collection/My_Collection.json')  # Imports the collection dictionary
         if self.myCollection == {}:                     # If collection is empty
-            self.dataQueue.put(('Print', "Please update your collection by listing a card in the Auction House and then cancelling your auction"))
+            self.dataQueue.put(('Print', "Please update your collection by relogging"))
         self.cardColors = card_info_handler.simple_colors()                 # A dict of cards and their colors
         self.platIcon = tk.PhotoImage(file='Icons/plat_icon.gif')
         self.packNum = 0
