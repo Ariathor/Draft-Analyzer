@@ -132,8 +132,11 @@ def export_collection():
                     price = prices[key.replace(',', '')]                                     # AH Data has no commas
                 except:
                     price = 0
-                writer.writerow([key, price, colors[key], sets[key], rarities[key], collection[key]])
-
+                try:
+                    writer.writerow([key, price, colors[key], sets[key], rarities[key], collection[key]])
+                except KeyError:
+                    if config_handler.verboseFlag:
+                        print(key, " not found")
 
 
 if __name__ == '__main__':
